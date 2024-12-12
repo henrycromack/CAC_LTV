@@ -356,13 +356,14 @@
             // Exibe mensagem de confirmação personalizada
             showConfirmationMessage();
         }
-    
+        
         function showConfirmationMessage() {
             const confirmationMessage = document.createElement("div");
             confirmationMessage.id = "confirmationMessage";
             confirmationMessage.innerHTML = `
                 <div class="popup-content">
                     <h2>Sucesso!</h2>
+                        <img src="assets/unicorn.gif" alt="Unicorn Sparkle" style="max-width: 100%; height: auto; margin-bottom: 20px;">
                     <p>Comentários enviados com sucesso!</p>
                     <button onclick="closePopup()">OK</button>
                 </div>
