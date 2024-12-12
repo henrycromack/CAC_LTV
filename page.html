@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto de Análise CAC & LTV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .instruction-text {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .instruction-text:hover {
+            background-color: #f9f9f9;
+            color: #000;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: url('assets/fundo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
+
+        main {
+            padding: 40px;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            overflow: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header img {
+            height: 40px;
+            margin-bottom: 3px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #ea4c7f;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -8px; /* Ajuste para alinhar a bolinha à esquerda */
+            transform: translateY(-50%);
+            width: 31px; /* Diâmetro da bolinha */
+            height: 30px; /* Diâmetro da bolinha */
+            background-color: #ea4c7f; /* Cor rosa */
+            border-radius: 50%; /* Faz a bolinha ser redonda */
+            z-index: -1;
+            transition: background-color 0.3s ease, transform 0.3 ease;
+        }
+
+        h2:hover {
+            color: #ea4c7f;
+        }
+
+        h2:hover::before {
+            background-color: #ffffff;
+            transform: translateY(-50%) scale(1:1);
+
+        }
+
+        h3 {
+            color: #ea4c7f;
+            margin-top: 20px;
+        }
+
+        .task {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+
+        .task input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: #ea4c7f;
+            border: none;
+        }
+
+        .task label {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .task button {
+            background-color: #ea4c7f;
+            color: #fff;
+            margin-left: 10%;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .task button:hover {
+            background-color: #d63c6b;
+            border-radius: 30px;
+        }
+
+        .comment-box {
+            display: none;
+            position: relative;
+            width: 50%;
+            margin-top: 10px;
+            margin-left: 10%;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .comment-box.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .comment-box textarea {
+            width: 100%;
+            height: 60px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            resize: none;
+        }
+
+        .comment-box button {
+            position: absolute;
+            bottom: 10px;
+            right: -18px;
+            background-color: #ea4c7f;
+            border-radius: 5px;
+            padding: 3px 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .comment-box button:hover {
+            background-color: #d63c6b;
+            color: #ffffff;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #sendButton {
+            display: block;
+            margin: 30px auto;
+            background-color: #ea4c7f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #sendButton:hover {
+            background-color: #d63c6b;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <img src="assets/logo.png" alt="Logo da Empresa">
+            <h1>Projeto de Análise CAC & LTV</h1>
+            <p class="instruction-text">Se estiver tudo ok com a etapa, marque o checkbox. Caso queira adicionar algum comentário, basta clicar no botão e enviar!</p>
+        </header>
+
+        <h2>1.  Objetivo do Projeto</h2>
+        <div class="task">
+            <input type="checkbox">
+            <label>Compreender e analisar as métricas de LTV e CAC da empresa.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Salvar e Fechar</button>
+            </div>
+        </div>
+
+        <h2>2.  Etapas do Projeto</h2>
+        <h3>2.1. Estudo Inicial</h3>
+        <div class="task">
+            <input type="checkbox">
+            <label>Estudar conceitos de LTV e CAC.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+        <div class="task">
+            <input type="checkbox">
+            <label>Explorar métricas auxiliares como churn rate e retenção.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+
+        <h3>2.2. Definição de Performance</h3>
+        <div class="task">
+            <input type="checkbox">
+            <label>Estabelecer frequência de análise e métricas principais.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+        <div class="task">
+            <input type="checkbox">
+            <label>Definir alinhamento com outros setores da empresa.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+
+        <h3>2.3. Ferramentas e Análises</h3>
+        <div class="task">
+            <input type="checkbox">
+            <label>Avaliar a capacidade da plataforma atual.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+        <div class="task">
+            <input type="checkbox">
+            <label>Identificar tendências e insights recorrentes.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+
+        <h2>3.  Resultados Esperados</h2>
+        <div class="task">
+            <input type="checkbox">
+            <label>Implementar métodos consistentes para análise de LTV e CAC.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+        <div class="task">
+            <input type="checkbox">
+            <label>Integrar insights ao planejamento estratégico da empresa.</label>
+            <button onclick="toggleCommentBox(this)">Adicionar Comentário</button>
+            <div class="comment-box">
+                <textarea placeholder="Digite seu comentário aqui..."></textarea>
+                <button onclick="closeCommentBox(this)">Fechar e Salvar</button>
+            </div>
+        </div>
+
+        <button id="sendButton" onclick="sendComments()">Enviar</button>
+    </main>
+
+    <script>
+        function toggleCommentBox(button) {
+            const commentBox = button.nextElementSibling;
+            button.style.display = "none";
+            commentBox.classList.add("show");
+        }
+
+        function closeCommentBox(button) {
+            const commentBox = button.parentElement;
+            const addButton = commentBox.previousElementSibling;
+            commentBox.classList.remove("show");
+            addButton.style.display = "inline-block";
+        }
+
+        function sendComments() {
+            const tasks = document.querySelectorAll(".task");
+            const comments = [];
+
+            tasks.forEach(task => {
+                const description = task.querySelector("label").innerText;
+                const commentBox = task.querySelector(".comment-box textarea");
+                const comment = commentBox.value;
+
+                if (comment) {
+                    comments.push({ description, comment });
+                }
+            });
+
+            comments.forEach(({ description, comment }) => {
+                const data = new FormData();
+                data.append("Descrição", description);
+                data.append("Comentário", comment);
+
+                fetch("https://script.google.com/macros/s/AKfycbzSG4fcpnZf1PQWHdmiT_NYOlHvEeSOOVpncx0DMih4XpBN8hkcAZBVNUfIFUQLkwPC2Q/exec", {
+                    method: "POST",
+                    body: data
+                })
+                .then(response => console.log("Comentário enviado com sucesso!"))
+                .catch(error => console.error("Erro ao enviar comentário: ", error));
+            });
+
+            alert("Todos os comentários foram enviados com sucesso!");
+        }
+    </script>
+</body>
+</html>
