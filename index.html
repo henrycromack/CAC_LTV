@@ -27,7 +27,7 @@
             line-height: 1.6;
             background: url('assets/fundo.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: #333;
+            color: #ffffff;
         }
 
         main {
@@ -35,7 +35,7 @@
             width: 80%;
             max-width: 600px;
             margin: 20px auto;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.264);
             backdrop-filter: blur(20px);
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -53,13 +53,17 @@
         }
 
         header h1 {
-            font-size: 20px;
+            font-size: 25px;
             margin: 0;
             font-weight: 600;
             text-transform: uppercase;
-            color: #ea4c7f;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            color: #fffefe;
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 10px;
+        }
+
+        .highlight-dot {
+            color: #ea4c7f;
         }
         
         h2 {
@@ -67,16 +71,21 @@
             margin-top: 20px;
             position: relative;
             text-align: left;
+            padding-left: 7px;
             transition: color 0.3s ease;
+        }
+
+        h2:first-of-type {
+            padding-left: 11px;
         }
 
         h2::before {
             content: '';
             position: absolute;
             top: 50%;
-            left: -8px; /* Ajuste para alinhar a bolinha à esquerda */
+            left: 0; /* Ajuste para alinhar a bolinha à esquerda */
             transform: translateY(-50%);
-            width: 31px; /* Diâmetro da bolinha */
+            width: 30px; /* Diâmetro da bolinha */
             height: 30px; /* Diâmetro da bolinha */
             background-color: #ea4c7f; /* Cor rosa */
             border-radius: 50%; /* Faz a bolinha ser redonda */
@@ -95,7 +104,8 @@
         }
 
         h3 {
-            color: #ea4c7f;
+            color: #ebebeb;
+            text-decoration: underline;
             margin-top: 20px;
         }
 
@@ -201,11 +211,11 @@
     <main>
         <header>
             <img src="assets/logo.png" alt="Logo da Empresa">
-            <h1>Projeto de Análise CAC & LTV</h1>
+            <h1>Projeto de Análise CAC & LTV<span class="highlight-dot">.</span></h1>
             <p class="instruction-text">Se estiver tudo ok com a etapa, marque o checkbox. Caso queira adicionar algum comentário, basta clicar no botão e enviar!</p>
         </header>
 
-        <h2>1.  Objetivo do Projeto</h2>
+        <h2>1. Sobre do Projeto</h2>
         <div class="task">
             <input type="checkbox">
             <label>Compreender e analisar as métricas de LTV e CAC da empresa.</label>
@@ -299,40 +309,42 @@
 
         <button id="sendButton" onclick="sendComments()">Enviar</button>
     </main>
-
     <script>
         function toggleCommentBox(button) {
             const commentBox = button.nextElementSibling;
             button.style.display = "none";
             commentBox.classList.add("show");
         }
-
+    
         function closeCommentBox(button) {
             const commentBox = button.parentElement;
             const addButton = commentBox.previousElementSibling;
             commentBox.classList.remove("show");
             addButton.style.display = "inline-block";
         }
-
+    
         function sendComments() {
             const tasks = document.querySelectorAll(".task");
             const comments = [];
-
+    
             tasks.forEach(task => {
                 const description = task.querySelector("label").innerText;
                 const commentBox = task.querySelector(".comment-box textarea");
                 const comment = commentBox.value;
-
+    
                 if (comment) {
                     comments.push({ description, comment });
                 }
+    
+                // Apaga o texto existente da caixa de texto
+                commentBox.value = "";
             });
-
+    
             comments.forEach(({ description, comment }) => {
                 const data = new FormData();
                 data.append("Descrição", description);
                 data.append("Comentário", comment);
-
+    
                 fetch("https://script.google.com/macros/s/AKfycbzSG4fcpnZf1PQWHdmiT_NYOlHvEeSOOVpncx0DMih4XpBN8hkcAZBVNUfIFUQLkwPC2Q/exec", {
                     method: "POST",
                     body: data
@@ -340,9 +352,100 @@
                 .then(response => console.log("Comentário enviado com sucesso!"))
                 .catch(error => console.error("Erro ao enviar comentário: ", error));
             });
-
-            alert("Todos os comentários foram enviados com sucesso!");
+    
+            // Exibe mensagem de confirmação personalizada
+            showConfirmationMessage();
         }
-    </script>
+    
+        function showConfirmationMessage() {
+            const confirmationMessage = document.createElement("div");
+            confirmationMessage.id = "confirmationMessage";
+            confirmationMessage.innerHTML = `
+                <div class="popup-content">
+                    <h2>Sucesso!</h2>
+                    <p>Comentários enviados com sucesso!</p>
+                    <button onclick="closePopup()">OK</button>
+                </div>
+            `;
+            
+            // Estilos da mensagem
+            confirmationMessage.style.position = "fixed";
+            confirmationMessage.style.top = "0";
+            confirmationMessage.style.left = "0";
+            confirmationMessage.style.width = "100vw";
+            confirmationMessage.style.height = "100vh";
+            confirmationMessage.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+            confirmationMessage.style.display = "flex";
+            confirmationMessage.style.alignItems = "center";
+            confirmationMessage.style.justifyContent = "center";
+            confirmationMessage.style.zIndex = "1000";
+            confirmationMessage.style.opacity = "0";
+            confirmationMessage.style.transition = "opacity 0.5s ease";
+    
+            const popupContent = document.createElement("style");
+            popupContent.textContent = `
+                .popup-content {
+                    background: rgba(255, 255, 255, 0.95);
+                    border-radius: 16px;
+                    padding: 20px 30px;
+                    text-align: center;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                    animation: scaleUp 0.5s ease;
+                }
+    
+                .popup-content h2 {
+                    color: #ea4c7f;
+                    font-size: 24px;
+                    margin-bottom: 10px;
+                }
+    
+                .popup-content p {
+                    font-size: 18px;
+                    color: #333;
+                    margin-bottom: 20px;
+                }
+    
+                .popup-content button {
+                    background-color: #ea4c7f;
+                    color: #fff;
+                    border: none;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+    
+                .popup-content button:hover {
+                    background-color: #d63c6b;
+                }
+    
+                @keyframes scaleUp {
+                    from {
+                        transform: scale(0.8);
+                    }
+                    to {
+                        transform: scale(1);
+                    }
+                }
+            `;
+            document.head.appendChild(popupContent);
+    
+            // Adiciona a mensagem ao corpo
+            document.body.appendChild(confirmationMessage);
+    
+            // Faz a transição da opacidade para aparecer
+            setTimeout(() => {
+                confirmationMessage.style.opacity = "1";
+            }, 100);
+        }
+    
+        function closePopup() {
+            const confirmationMessage = document.getElementById("confirmationMessage");
+            confirmationMessage.style.opacity = "0"; // Faz desaparecer gradualmente
+            setTimeout(() => confirmationMessage.remove(), 500); // Remove o elemento do DOM
+        }
+    </script>      
+    
 </body>
 </html>
