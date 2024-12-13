@@ -323,7 +323,7 @@
 
         <button id="sendButton" onclick="sendComments()">Enviar</button>
     </main>
-    <script>
+        <script>
         function toggleCommentBox(button) {
             const commentBox = button.nextElementSibling;
             button.style.display = "none";
@@ -386,7 +386,7 @@
             confirmationMessage.style.left = "0";
             confirmationMessage.style.width = "100vw";
             confirmationMessage.style.height = "100vh";
-            confirmationMessage.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+            confirmationMessage.style.backgroundColor = "transparent";
             confirmationMessage.style.display = "flex";
             confirmationMessage.style.alignItems = "center";
             confirmationMessage.style.justifyContent = "center";
@@ -403,6 +403,11 @@
                     text-align: center;
                     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
                     animation: scaleUp 0.5s ease;
+                }
+
+                .popup-overlay.active {
+                    opacity: 1;
+                    visibility: visible;
                 }
 
                 .popup-content h2 {
@@ -449,6 +454,11 @@
             }, 100);
         }
 
+        function showPopup() {
+            const popupOverlay = document.getElementById("confirmationMessage");
+            popupOverlay.classList.add("active");
+        }
+
         function closePopup() {
             const confirmationMessage = document.getElementById("confirmationMessage");
             confirmationMessage.style.opacity = "0";
@@ -462,6 +472,7 @@
                 document.body.classList.add("loaded");
             });
         }
+
 
         window.addEventListener("beforeunload", () => {
             document.body.classList.add("unloading");

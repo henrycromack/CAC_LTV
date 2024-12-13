@@ -61,7 +61,7 @@
 
         .password-wrapper input {
             width: 100%;
-            box-sizing: border-box; /* Garante que o campo tenha o mesmo tamanho */
+            box-sizing: border-box;
         }
 
         .password-wrapper .toggle-password {
@@ -121,6 +121,60 @@
         .switch a:hover {
             color: #ffffff;
         }
+
+        /* Pop-up styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .popup-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .popup-content h2 .black {
+            color: #333;
+        }
+
+        .popup-content h2 .pink {
+            color: #ea4c7f;
+        }
+
+        .popup-content img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .popup-content button {
+            background-color: #ea4c7f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .popup-content button:hover {
+            background-color: #d63c6b;
+        }
     </style>
 </head>
 <body>
@@ -132,13 +186,11 @@
             <input type="email" name="email" id="email" placeholder="Email" required>
             <input type="email" name="confirmEmail" id="confirmEmail" placeholder="Confirme o Email" required>
 
-            <!-- Campo de senha com ícone -->
             <div class="password-wrapper">
                 <input type="password" name="senha" id="senha" placeholder="Senha" required>
                 <button type="button" class="toggle-password" onclick="togglePasswordVisibility('senha')">&#128065;</button>
             </div>
 
-            <!-- Campo de confirmação de senha com ícone -->
             <div class="password-wrapper">
                 <input type="password" name="confirmSenha" id="confirmSenha" placeholder="Confirme a Senha" required>
                 <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirmSenha')">&#128065;</button>
@@ -153,11 +205,22 @@
                 </ul>
             </div>
             <button type="submit">Cadastrar</button>
-        </form>        
+        </form>
         <div class="switch">
             Já tem uma conta? <a href="index.html">Faça login</a>
         </div>
     </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2><span class="black">Sucesso,</span> <span class="pink">Queen!</span></h2>
+            <img src="assets/capivara.gif" alt="Sucesso">
+            <p>Cadastro realizado com sucesso!</p>
+            <button onclick="closePopup()">Fechar</button>
+            <button onclick="goToLogin()">Ir para a página de login</button>
+        </div>
+    </div>
+
     <script>
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
@@ -165,22 +228,25 @@
 
             if (input.type === "password") {
                 input.type = "text";
-                toggleButton.classList.add("active"); // Adiciona a classe quando clicado
+                toggleButton.classList.add("active");
             } else {
                 input.type = "password";
-                toggleButton.classList.remove("active"); // Remove a classe quando desativado
+                toggleButton.classList.remove("active");
             }
         }
 
         const form = document.getElementById('signupForm');
+        const popup = document.getElementById('popup');
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const email = document.getElementById('email').value;
-            const confirmEmail = document.getElementById('confirmEmail').value;
-            const senha = document.getElementById('senha').value;
-            const confirmSenha = document.getElementById('confirmSenha').value;
+            const nome = document.querySelector('input[name="nome"]').value;
+            const sobrenome = document.querySelector('input[name="sobrenome"]').value;
+            const email = document.querySelector('input[name="email"]').value;
+            const confirmEmail = document.querySelector('input[name="confirmEmail"]').value;
+            const senha = document.querySelector('input[name="senha"]').value;
+            const confirmSenha = document.querySelector('input[name="confirmSenha"]').value;
 
             const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
@@ -199,26 +265,41 @@
                 return;
             }
 
-            // Enviar os dados para o Google Sheets
-            const formData = new FormData(form);
+            const data = new URLSearchParams();
+            data.append('nome', nome);
+            data.append('sobrenome', sobrenome);
+            data.append('email', email);
+            data.append('senha', senha);
 
-            fetch("https://script.google.com/macros/s/AKfycbzKAN6_bUMPSgAgzgjSKwszdS_2QWWWAGrNdgNVK_yaOsomlUYIgZP_aG1YE6cYtTEa/exec", {
-                method: "POST",
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        alert('Cadastro realizado com sucesso!');
-                        window.location.href = 'index.html';
-                    } else {
-                        alert('Erro ao realizar cadastro!');
-                    }
-                })
-                .catch(error => {
-                    alert('Erro ao enviar os dados: ' + error.message);
+            try {
+                const response = await fetch("https://script.google.com/macros/s/AKfycbzKAN6_bUMPSgAgzgjSKwszdS_2QWWWAGrNdgNVK_yaOsomlUYIgZP_aG1YE6cYtTEa/exec", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: data.toString(),
                 });
+
+                const result = await response.json();
+
+                if (result.result === "success") {
+                    popup.style.display = 'flex';
+                } else {
+                    alert(result.message || 'Ocorreu um erro ao salvar os dados.');
+                }
+            } catch (error) {
+                alert('Erro ao enviar os dados. Verifique sua conexão com a internet.');
+                console.error(error);
+            }
         });
+
+        function closePopup() {
+            popup.style.display = 'none';
+        }
+
+        function goToLogin() {
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
