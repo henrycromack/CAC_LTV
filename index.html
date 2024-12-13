@@ -17,6 +17,19 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            opacity: 0; /* Começa invisível */
+            transform: translateY(20px); /* Move ligeiramente para baixo */
+            transition: opacity 0.5s ease, transform 0.5s ease; /* Animação suave */
+        }
+
+        body.loaded {
+            opacity: 1; /* Fica visível */
+            transform: translateY(0); /* Volta à posição inicial */
+        }
+
+        body.unloading {
+            opacity: 0; /* Desaparece */
+            transform: translateY(-20px); /* Move ligeiramente para cima */
         }
 
         .container {
@@ -108,6 +121,24 @@
     </div>
 
     <script>
+        // Adiciona a classe 'loaded' ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Adiciona a classe 'unloading' ao sair da página
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // Evita a navegação imediata
+                const target = e.target.href;
+                document.body.classList.add('unloading');
+                setTimeout(() => {
+                    window.location.href = target; // Navega após a animação
+                }, 500); // Duração igual ao tempo de transição
+            });
+        });
+
         const form = document.getElementById('loginForm');
         const errorMessage = document.getElementById('errorMessage');
 
@@ -122,7 +153,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.result === 'success') {
-                        window.location.href = "etapas.html";
+                        document.body.classList.add('unloading');
+                        setTimeout(() => {
+                            window.location.href = "etapas.html";
+                        }, 500);
                     } else {
                         errorMessage.textContent = 'Não rolou, mana. Revise seus dados.';
                         errorMessage.style.display = 'block';
