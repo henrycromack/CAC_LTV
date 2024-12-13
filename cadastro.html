@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('assets/fundo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .container h1 {
+            font-size: 28px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container input {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .container input::placeholder {
+            color: #ffffff;
+        }
+
+        .container .rules {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .container button {
+            background-color: #ea4c7f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .container button:hover {
+            background-color: #d63c6b;
+        }
+
+        .switch {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .switch a {
+            color: #ea4c7f;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .switch a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro</h1>
+        <form id="signupForm">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="sobrenome" placeholder="Sobrenome" required>
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <input type="email" name="confirmEmail" id="confirmEmail" placeholder="Confirme o Email" required>
+            <input type="password" name="senha" id="senha" placeholder="Senha" required>
+            <input type="password" name="confirmSenha" id="confirmSenha" placeholder="Confirme a Senha" required>
+            <div class="rules">
+                <p><strong>Colinha de Senha:</strong></p>
+                <ul>
+                    <li>8 caracteres ou mais</li>
+                    <li>Pelo menos uma letra maiúscula</li>
+                    <li>Pelo menos um número</li>
+                </ul>
+            </div>
+            <button type="submit">Cadastrar</button>
+        </form>        
+        <div class="switch">
+            Já tem uma conta? <a href="login.html">Faça login</a>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('signupForm');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const confirmEmail = document.getElementById('confirmEmail').value;
+            const senha = document.getElementById('senha').value;
+            const confirmSenha = document.getElementById('confirmSenha').value;
+
+            const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            if (email !== confirmEmail) {
+                alert('Os emails não coincidem!');
+                return;
+            }
+
+            if (senha !== confirmSenha) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+
+            if (!senhaRegex.test(senha)) {
+                alert('Senha inválida! Ela deve conter pelo menos 8 caracteres, uma letra maiúscula e um número.');
+                return;
+            }
+
+            // Enviar os dados para o Google Sheets
+            const formData = new FormData(form);
+
+            fetch("https://script.google.com/macros/s/AKfycbzKAN6_bUMPSgAgzgjSKwszdS_2QWWWAGrNdgNVK_yaOsomlUYIgZP_aG1YE6cYtTEa/exec", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert('Cadastro realizado com sucesso!');
+                        window.location.href = 'login.html';
+                    } else {
+                        alert('Erro ao realizar cadastro!');
+                    }
+                })
+                .catch(error => {
+                    alert('Erro ao enviar os dados: ' + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
